@@ -1,0 +1,21 @@
+<script type="text/javascript">
+    if (!window._klaviyoProfileManagerReloadedOnce) {
+        window._klaviyoProfileManagerReloadedOnce = true;
+        console.log("Reloading in 1s...");
+
+        // Remove any existing flash
+        document.getElementById("notice")?.remove();
+
+        // Add success notice
+        const el = document.createElement("div");
+        el.id = "notice";
+        el.className = "bg-green-100 text-green-800 p-2 rounded fixed top-4 left-1/2 transform -translate-x-1/2 shadow z-50";
+        el.innerText = "Tags updated. Reloading...";
+        document.body.appendChild(el);
+
+        // Wait and reload
+        setTimeout(() => Turbo.visit(window.location.href), 1000);
+    } else {
+        console.log("Reload already happened, skipping");
+    }
+</script>

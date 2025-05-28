@@ -1,0 +1,61 @@
+<turbo-frame id="profiles_page">
+  <div class="max-w-6xl mx-auto px-6 py-10 space-y-6">
+    <h2 class="text-3xl font-bold text-gray-900">Klaviyo Profiles</h2>
+
+    <div class="flex flex-wrap gap-4 items-end mb-6">
+      <%= form_with url: profiles_path, method: :get, local: true, class: "flex gap-2" do |f| %>
+        <%= f.text_field :q, value: @query, placeholder: "Search by email", class: "px-3 py-2 border rounded w-64" %>
+        <%= f.submit "Search", class: "px-4 py-2 bg-blue-500 text-white rounded" %>
+      <% end %>
+
+      <%= button_to "Refresh Profiles", refresh_profiles_path, method: :post, data: { turbo_stream: true }, class: "px-4 py-2 bg-gray-700 text-white rounded" %>
+    </div>
+
+    <div data-controller="engagement_modal">
+      <%= form_with url: update_engagement_profiles_path, method: :patch, local: true do |form| %>
+        <div class="flex items-center gap-4 mb-6">
+          <span class="font-medium text-gray-700">Engagement Level:</span>
+
+          <button
+            type="button"
+            data-action="click->engagement_modal#open"
+            class="w-60 px-3 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded shadow-sm transition"
+          >
+            Set Engagement
+          </button>
+        </div>
+
+        <div class="text-red-600 text-sm font-medium hidden" data-engagement_modal-target="notice"></div>
+
+        <turbo-frame id="engagement_modal"></turbo-frame>
+
+        <div class="overflow-x-auto border border-gray-200 rounded-lg shadow">
+          <table class="min-w-full divide-y divide-gray-200 text-sm">
+            <thead class="bg-gray-50 text-gray-600 uppercase tracking-wider text-xs font-semibold">
+            <tr>
+              <th class="px-4 py-3 text-left w-8"></th>
+              <th class="px-4 py-3 text-left">Email</th>
+              <th class="px-4 py-3 text-left">Engagement</th>
+            </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-100">
+            <% @profiles.each do |profile| %>
+              <tr class="hover:bg-gray-50">
+                <td class="px-4 py-3">
+                  <%= check_box_tag "profile_ids[]", profile.id, false, class: "rounded border-gray-300 text-indigo-600 focus:ring-indigo-500" %>
+                </td>
+                <td class="px-4 py-3 font-medium text-gray-900"><%= profile.email %></td>
+                <td class="px-4 py-3 text-gray-700"><%= profile.engagement_level.presence || "-" %></td>
+              </tr>
+            <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+
+      <%= render "shared/pagination", pagy: @pagy %>
+    </div>
+  </div>
+</turbo-frame>
+
+<%= turbo_stream_from "profiles_page" %>

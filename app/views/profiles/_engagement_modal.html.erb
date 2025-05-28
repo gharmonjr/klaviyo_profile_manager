@@ -1,0 +1,38 @@
+<turbo-frame id="engagement_modal"></turbo-frame>
+  <div class="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm" data-action="click->engagement_modal#close">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md transform transition-all scale-100" data-action="click->engagement_modal#stopPropagation">
+
+      <h2 class="text-2xl font-bold text-gray-900 mb-6">Add Tags</h2>
+
+      <%= form_with url: update_engagement_profiles_path, method: :patch, local: true do |form| %>
+        <% @profile_ids.each do |id| %>
+          <%= hidden_field_tag "profile_ids[]", id %>
+        <% end %>
+
+        <div class="mb-6">
+          <label for="engagement_level" class="block text-sm font-medium text-gray-700 mb-2">Tag</label>
+          <select
+            id="engagement_level"
+            name="engagement_level"
+            class="block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
+          >
+            <% @engagement_levels.each do |level| %>
+              <option value="<%= level.key %>"><%= level.value %></option>
+            <% end %>
+          </select>
+        </div>
+
+        <div class="flex justify-end gap-3">
+          <button
+            type="button"
+            class="px-4 py-2 text-gray-600 hover:text-gray-800"
+            data-action="click->engagement_modal#close"
+          >
+            Cancel
+          </button>
+          <%= form.submit "OK", class: "px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</turbo-frame>

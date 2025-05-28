@@ -1,0 +1,2 @@
+class EngagementLevel < ApplicationRecord
+end
